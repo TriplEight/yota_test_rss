@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,8 +17,9 @@ import android.widget.RemoteViews;
  */
 public class AppWidgetConfigure extends Activity {
 
+    public static String STORAGE="preferences";
     private int mAppWidgetId;
-    private static String mRssUrl = "http://feeds.reuters.com/reuters/businessNews";
+    private static String mRssUrl = "";
     private EditText etRss;
 
     public static String getmRssUrl(){
@@ -47,7 +49,9 @@ public class AppWidgetConfigure extends Activity {
             @Override
             public void onClick(View v) {
                 mRssUrl = etRss.getText().toString();
-
+                SharedPreferences.Editor editor = getSharedPreferences(STORAGE, MODE_PRIVATE).edit();
+                editor.putString("url", mRssUrl);
+                editor.apply();
                 Intent resultValue = new Intent();
                 resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
 
@@ -59,7 +63,6 @@ public class AppWidgetConfigure extends Activity {
             }
         });
 
-        //TODO: get url from edit_Text
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         RemoteViews views = new RemoteViews(context.getPackageName(),

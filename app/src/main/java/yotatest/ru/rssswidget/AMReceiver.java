@@ -28,16 +28,17 @@ public class AMReceiver extends BroadcastReceiver {
             setUpNextAlarmInMin(context);
         }
         //get new data
-        if (AppWidgetConfigure.getmRssUrl() != null ) {
-            XMLParser parser =  XMLParser.initiate(AppWidgetConfigure.getmRssUrl());
+        if (RssAppWidgetProvider.getRssUrl() != null ) {
+            XMLParser parser =  XMLParser.initiate(RssAppWidgetProvider.getRssUrl());
             parser.fetchXML();
-            Log.v("widget", parser.getNewsCount()+"");
+            Log.v("widget", parser.getNewsCount() + "");
+            RssAppWidgetProvider.displayedNewsNumber=0;
         }
         //update widget
         Intent intent = new Intent(context, RssAppWidgetProvider.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         int ids[] = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, RssAppWidgetProvider.class));
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
         context.sendBroadcast(intent);
     }
 

@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -15,27 +16,40 @@ import android.widget.Toast;
  */
 public class RssAppWidgetProvider extends AppWidgetProvider{
 
-    private static int displayedNewsNumber=0;
+    public static int displayedNewsNumber=0;
+    private static String rssUrl="";
     public static String WIDGET_BUTTON = "android.appwidget.WIDGET_BUTTON_RIGHT";
     public static String WIDGET_BUTTON_LEFT = "android.appwidget.WIDGET_BUTTON_LEFT";
     public void changeCurrentNews(int newNum){
         displayedNewsNumber = newNum;
     }
+
+    public static String getRssUrl(){
+        return rssUrl;
+    }
     private void firstUpdate(){
-        XMLParser parser = XMLParser.initiate(AppWidgetConfigure.getmRssUrl());
+        XMLParser parser = XMLParser.initiate(getRssUrl());
         parser.fetchXML();
     }
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
-        XMLParser parser = XMLParser.initiate(AppWidgetConfigure.getmRssUrl());
+        SharedPreferences prefs = context.getSharedPreferences(AppWidgetConfigure.STORAGE, Context.MODE_PRIVATE);
+        String restoredText = prefs.getString("url", null);
+        if (restoredText != null & rssUrl.equals("")) {
+            rssUrl = prefs.getString("url", "");
+        }
+        if (!AppWidgetConfigure.getmRssUrl().equals("")){
+            rssUrl = AppWidgetConfigure.getmRssUrl();
+        }
+        XMLParser parser = XMLParser.initiate(getRssUrl());
         if (parser.getNewsCount()==0){
             firstUpdate();
         }
-        if (displayedNewsNumber==parser.getNewsCount()){
+        if (!getRssUrl().equals("") & displayedNewsNumber==parser.getNewsCount()){
             Toast.makeText(context, "Далее новостей нет!", Toast.LENGTH_SHORT).show();
             displayedNewsNumber--;
         }
-        if (displayedNewsNumber==-1){
+        if (!getRssUrl().equals("") & displayedNewsNumber==-1){
             Toast.makeText(context, "Пока обновлений не было!", Toast.LENGTH_SHORT).show();
             displayedNewsNumber++;
         }
@@ -73,8 +87,8 @@ public class RssAppWidgetProvider extends AppWidgetProvider{
             displayedNewsNumber--;
         }
         if (WIDGET_BUTTON_LEFT.equals(intent.getAction())||WIDGET_BUTTON.equals(intent.getAction())) {
-            if (AppWidgetConfigure.getmRssUrl() != null) {
-                XMLParser parser = XMLParser.initiate(AppWidgetConfigure.getmRssUrl());
+            if (getRssUrl() != null) {
+                XMLParser parser = XMLParser.initiate(getRssUrl());
                 parser.fetchXML();
                 Log.v("widget", parser.getNewsCount() + "");
             }
