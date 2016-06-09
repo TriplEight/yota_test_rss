@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/etRssUrl"
         android:layout_gravity="center_horizontal"
-        android:text="http://news.rambler.ru/rss/head" />
+        android:text="http://ria.ru/export/rss2/world/index.xml" />
 
     <Button
         android:layout_width="wrap_content"

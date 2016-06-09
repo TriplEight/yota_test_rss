@@ -43,7 +43,7 @@ public class XMLParser {
     }
 
     private XMLParser(String url){
-        this.urlString = url;
+        urlString = url;
         parsedObjects = new ArrayList<>();
     }
 

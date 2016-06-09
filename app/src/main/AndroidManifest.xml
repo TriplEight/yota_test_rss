@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="yotatest.ru.rssswidget">
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,6 +19,9 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/appwidget_info"/>
         </receiver>
+
+        <service android:name=".WakefulService" >
+        </service>
 
         <receiver android:name=".AMReceiver">
 

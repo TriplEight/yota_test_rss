@@ -29,6 +29,8 @@ public class AMReceiver extends WakefulBroadcastReceiver {
             setUpNextAlarmInMin(context);
         }
         //get new data
+        RssAppWidgetProvider.findUrl(context);
+        Log.v("AMReceiver",""+RssAppWidgetProvider.getRssUrl() );
         if (RssAppWidgetProvider.getRssUrl() != null ) {
 
             // This is the Intent to deliver to our service.

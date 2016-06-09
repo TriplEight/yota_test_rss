@@ -24,6 +24,9 @@ public class RssAppWidgetProvider extends AppWidgetProvider{
         displayedNewsNumber = newNum;
     }
 
+    public static void _setRssUrl(String url){
+        rssUrl = url;
+    }
     public static String getRssUrl(){
         return rssUrl;
     }
@@ -33,18 +36,12 @@ public class RssAppWidgetProvider extends AppWidgetProvider{
     }
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
-        SharedPreferences prefs = context.getSharedPreferences(AppWidgetConfigure.STORAGE, Context.MODE_PRIVATE);
-        String restoredText = prefs.getString("url", null);
-        if (restoredText != null & rssUrl.equals("")) {
-            rssUrl = prefs.getString("url", "");
-        }
-        if (!AppWidgetConfigure.getmRssUrl().equals("")){
-            rssUrl = AppWidgetConfigure.getmRssUrl();
-        }
+        findUrl(context);
         XMLParser parser = XMLParser.initiate(getRssUrl());
         if (parser.getNewsCount()==0){
             firstUpdate();
         }
+        RssAppWidgetProvider.findUrl(context);
         if (!getRssUrl().equals("") & displayedNewsNumber==parser.getNewsCount()){
             Toast.makeText(context, "Далее новостей нет!", Toast.LENGTH_SHORT).show();
             displayedNewsNumber--;
@@ -56,7 +53,7 @@ public class RssAppWidgetProvider extends AppWidgetProvider{
         for (int i=0; i< N; i++){
             int appWidgetId = appWidgetIds[i];
 
-            Log.v("widget","updating widget");
+            Log.v("widget","updating widget: " + parser.getNewsCount()+"  number: "+displayedNewsNumber);
             //Intent intent = new Intent(context, SampleActivity.class);
             //PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent , 0);
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
@@ -76,6 +73,17 @@ public class RssAppWidgetProvider extends AppWidgetProvider{
         }
     }
 
+    public static void findUrl(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(AppWidgetConfigure.STORAGE, Context.MODE_PRIVATE);
+        String restoredText = prefs.getString("url", null);
+        if (restoredText != null & rssUrl.equals("")) {
+            rssUrl = prefs.getString("url", "");
+        }
+        if (!AppWidgetConfigure.getmRssUrl().equals("")){
+            rssUrl = AppWidgetConfigure.getmRssUrl();
+        }
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
@@ -87,11 +95,11 @@ public class RssAppWidgetProvider extends AppWidgetProvider{
             displayedNewsNumber--;
         }
         if (WIDGET_BUTTON_LEFT.equals(intent.getAction())||WIDGET_BUTTON.equals(intent.getAction())) {
-            if (getRssUrl() != null) {
-                XMLParser parser = XMLParser.initiate(getRssUrl());
-                parser.fetchXML();
-                Log.v("widget", parser.getNewsCount() + "");
-            }
+//            if (getRssUrl() != null) {
+//                XMLParser parser = XMLParser.initiate(getRssUrl());
+//                parser.fetchXML();
+//                Log.v("widget", parser.getNewsCount() + "");
+//            }
             //update widget
             Intent intentn = new Intent(context, RssAppWidgetProvider.class);
             intentn.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
