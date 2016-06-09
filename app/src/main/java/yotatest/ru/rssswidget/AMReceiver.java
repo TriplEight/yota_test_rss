@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,7 +22,7 @@ import java.util.Calendar;
 /**
  * Created by Nikita on 05.06.2016.
  */
-public class AMReceiver extends BroadcastReceiver {
+public class AMReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent_received) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -29,9 +30,11 @@ public class AMReceiver extends BroadcastReceiver {
         }
         //get new data
         if (RssAppWidgetProvider.getRssUrl() != null ) {
-            XMLParser parser =  XMLParser.initiate(RssAppWidgetProvider.getRssUrl());
-            parser.fetchXML();
-            Log.v("widget", parser.getNewsCount() + "");
+
+            // This is the Intent to deliver to our service.
+            Intent service = new Intent(context, WakefulService.class);
+            // Start the service, keeping the device awake while it is launching.
+            startWakefulService(context, service);
             RssAppWidgetProvider.displayedNewsNumber=0;
         }
         //update widget

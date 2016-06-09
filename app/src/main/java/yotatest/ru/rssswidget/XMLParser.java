@@ -19,6 +19,7 @@ public class XMLParser {
     public volatile boolean parsingComplete = true;
     private ArrayList<ParsedObject> parsedObjects;
     private static XMLParser xmlParser;
+    private static Thread thread;
 
     public int getNewsCount(){
         return parsedObjects.size();
@@ -107,7 +108,7 @@ public class XMLParser {
     }
 
     public void fetchXML(){
-        Thread thread = new Thread(new Runnable(){
+        thread = new Thread(new Runnable(){
             @Override
             public void run() {
 
